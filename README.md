@@ -15,7 +15,7 @@ Working FastAPI API with a User and Profile models and schemas.
 - [ ] Test at least 2 endpoints using pytest (with fixtures)
 - [ ] Point docs to root path
 - [x] Create requirements file
-- [ ] Add a section on `README.md` with setup (venv), install (pip), run and testing instructions
+- [x] Add a section on `README.md` with setup (venv), install (pip), run and testing instructions
 
 ### User
 - Email as username
@@ -33,3 +33,32 @@ Working FastAPI API with a User and Profile models and schemas.
 - Implement proper folder structure
 - Validation must be done using Pydantic
 - Use multiple commits (when possible, use conventional commit messages)
+
+## Index of commands:
+
+- [Index of commands:](#index-of-commands)
+  - [Run the project](#run-the-project)
+  - [Connect to the API container](#connect-to-the-api-container)
+  - [Generate updated dependencies](#generate-updated-dependencies)
+
+### Run the project
+
+You must have Docker installed:
+
+https://docs.docker.com/engine/install/
+
+Set up the development environment:
+
+`docker compose -f dockerfiles/docker-compose.yml up --build`
+
+
+### Connect to the API container
+
+`docker exec -it fastapi bash`
+
+
+### Generate updated dependencies
+
+In the container:
+
+`bash scripts/update_requirements.sh`
