@@ -1,11 +1,7 @@
 from fastapi import FastAPI
 
-app = FastAPI()
 
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+app = FastAPI(docs_url="/")
 
 
 @app.get("/hello/{name}")

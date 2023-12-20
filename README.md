@@ -13,7 +13,7 @@ Working FastAPI API with a User and Profile models and schemas.
 - [ ] Create a [User](###User) and [Profile](###Profile) models and schemas 
 - [ ] Develop a REST API exposing CRUD endpoints for both models
 - [ ] Test at least 2 endpoints using pytest (with fixtures)
-- [ ] Point docs to root path
+- [x] Point docs to root path
 - [x] Create requirements file
 - [x] Add a section on `README.md` with setup (venv), install (pip), run and testing instructions
 
