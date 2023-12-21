@@ -4,6 +4,6 @@ from fastapi import FastAPI
 app = FastAPI(docs_url="/")
 
 
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+@app.get("/hello/")
+async def say_hello_world():
+    return {"message": "Hello world"}
