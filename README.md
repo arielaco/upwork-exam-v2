@@ -62,3 +62,10 @@ Set up the development environment:
 In the container:
 
 `bash scripts/update_requirements.sh`
+
+
+### Generate BPMN diagram
+
+Paste code from `docs/app.tree` to
+
+https://www.bpmn-sketch-miner.ai/
