@@ -73,18 +73,24 @@ def client_fixture(session: Session):
             status.HTTP_422_UNPROCESSABLE_ENTITY,
             False,
         ),
-        # (
-        #     "",
-        #     "password123",
-        #     status.HTTP_422_UNPROCESSABLE_ENTITY,
-        #     False,
-        # ),
-        # (
-        #     "",
-        #     "",
-        #     status.HTTP_422_UNPROCESSABLE_ENTITY,
-        #     False,
-        # ),
+        (
+            "",
+            "password123",
+            status.HTTP_422_UNPROCESSABLE_ENTITY,
+            False,
+        ),
+        (
+            "",
+            "",
+            status.HTTP_422_UNPROCESSABLE_ENTITY,
+            False,
+        ),
+        (
+            "user_07",
+            "password123",
+            status.HTTP_422_UNPROCESSABLE_ENTITY,
+            False,
+        ),
     ],
 )
 def test_create_user(
@@ -106,6 +112,8 @@ def test_create_user(
         assert response.json() == {
             "response": "User created",
         }
+    else:
+        assert "detail" in response.json()
 
 
 @pytest.mark.parametrize(
