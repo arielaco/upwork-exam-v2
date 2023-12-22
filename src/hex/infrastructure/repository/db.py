@@ -12,3 +12,7 @@ def fake_save_user(user_in: UserIn):
     )
     print("User saved! ..not really")
     return user_in_db
+
+
+def login_user(user_in: UserIn):
+    return "jwt"
