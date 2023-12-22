@@ -1,9 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
+
+
+from .hex.infrastructure.routers.rest import router as rest_router
+
+
+router = APIRouter(prefix="/api")
+router.include_router(rest_router)
 
 
 app = FastAPI(docs_url="/")
-
-
-@app.get("/hello/")
-async def say_hello_world():
-    return {"message": "Hello world"}
+app.include_router(router)
