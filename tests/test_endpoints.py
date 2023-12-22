@@ -18,16 +18,16 @@ def test_create_user():
     }
 
 
-# def test_login():
-#     client = TestClient(app)
-#     response = client.post(
-#         "api/v1/login/",
-#         json={
-#             "username": "user@server.com",
-#             "password": "wasd1234",
-#         },
-#     )
-#     assert response.status_code == 200
-#     assert response.json() == {
-#         "token": "jwt",
-#     }
+def test_login():
+    client = TestClient(app)
+    response = client.post(
+        "api/v1/login/",
+        json={
+            "username": "user@server.com",
+            "password": "wasd1234",
+        },
+    )
+    assert response.status_code == 200
+    assert response.json() == {
+        "token": "jwt",
+    }
