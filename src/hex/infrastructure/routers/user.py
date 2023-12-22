@@ -1,9 +1,17 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, status
+
+from ..schemas.user import UserIn
+
+from ...application.use_cases.user import create_user
 
 
-router = APIRouter(prefix="")
+router = APIRouter()
 
 
-@router.get("/sign-up/")
-async def say_hello_world():
-    return {"message": "Hello world"}
+@router.post(
+    "/sign-up/",
+    status_code=status.HTTP_201_CREATED,
+)
+async def create_user_endpoint(user_in: UserIn):
+    response = create_user(user_in)
+    return response
