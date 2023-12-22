@@ -69,3 +69,11 @@ In the container:
 Paste code from `docs/app.tree` to
 
 https://www.bpmn-sketch-miner.ai/
+
+
+### Generate coverage report
+
+In the container:
+
+`coverage run -m pytest`
+`coverage html`

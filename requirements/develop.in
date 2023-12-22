@@ -5,3 +5,4 @@ pip-tools
 ipython
 pytest
 coverage
+httpx
