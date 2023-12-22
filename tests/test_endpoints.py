@@ -24,7 +24,7 @@ def test_login():
         "api/v1/login/",
         json={
             "username": "user@server.com",
-            "password": "wasd1234",
+            "password": "password123",
         },
     )
     assert response.status_code == 200
