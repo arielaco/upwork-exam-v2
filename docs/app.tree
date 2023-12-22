@@ -1,6 +1,7 @@
 Entry Exam:
+...
 Home
-Sign In
+Sign Up
 Login
 ...
 
@@ -25,8 +26,8 @@ Dashboard
 
 ...
 Dashboard
-List of favorite Profiles
-Delete Profile from favorites
+List of my favorite Profiles
+Delete Profile from my favorites
 Dashboard
 ...
 
@@ -47,7 +48,11 @@ Dashboard
 ...
 
 
-
+...
+Dashboard
+Delete User
+Home
+...
 
 
 
