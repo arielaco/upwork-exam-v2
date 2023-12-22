@@ -6,7 +6,7 @@ from ...infrastructure.repository.db import fake_save_user, login_user
 def create_user(user_in: UserIn):
     user_saved = fake_save_user(user_in)
     data = {
-        "username": "user@server.com",
+        "username": "user_00@server_00.com",
         "password": "password123",
     }
     if user_in.model_dump() == data:
@@ -18,7 +18,7 @@ def create_user(user_in: UserIn):
 def login(user_in: UserIn):
     token_jwt = login_user(user_in)
     data = {
-        "username": "user@server.com",
+        "username": "user_00@server_00.com",
         "password": "password123",
     }
     if user_in.model_dump() == data:

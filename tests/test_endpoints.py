@@ -10,10 +10,46 @@ from ..src.main import app
     "username, password, status_code, happy_path",
     [
         (
-            "user@server.com",
+            "user_00@server_00.com",
             "password123",
             status.HTTP_201_CREATED,
             True,
+        ),
+        (
+            "user_01@server_00.com",
+            "password123",
+            status.HTTP_201_CREATED,
+            True,
+        ),
+        (
+            "user_02@server_00.com",
+            "123password",
+            status.HTTP_201_CREATED,
+            True,
+        ),
+        (
+            "user_03@server_01.xyz",
+            "Pa$$w0rd123xyz",
+            status.HTTP_201_CREATED,
+            True,
+        ),
+        (
+            "user_04@server_00.com",
+            "",
+            status.HTTP_422_UNPROCESSABLE_ENTITY,
+            False,
+        ),
+        (
+            "",
+            "password123",
+            status.HTTP_422_UNPROCESSABLE_ENTITY,
+            False,
+        ),
+        (
+            "",
+            "",
+            status.HTTP_422_UNPROCESSABLE_ENTITY,
+            False,
         ),
     ],
 )
@@ -26,8 +62,8 @@ def test_create_user(username, password, status_code, happy_path):
             "password": password,
         },
     )
+    assert response.status_code == status_code
     if happy_path:
-        assert response.status_code == status_code
         assert response.json() == {
             "response": "User created",
         }
@@ -37,7 +73,7 @@ def test_create_user(username, password, status_code, happy_path):
     "username, password, status_code, happy_path",
     [
         (
-            "user@server.com",
+            "user_00@server_00.com",
             "password123",
             status.HTTP_200_OK,
             True,
