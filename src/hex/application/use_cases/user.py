@@ -2,11 +2,11 @@ from sqlmodel import Session
 from fastapi import HTTPException
 
 from ...infrastructure.schemas.user import UserIn
-from ...infrastructure.repository.db import save_user, login_user
+from ...infrastructure.repository.db import user_save, login_user
 
 
 def create_user(session: Session, user_in: UserIn):
-    save_user(session, user_in)
+    user_save(session, user_in)
     return {"response": "User created"}
 
 
