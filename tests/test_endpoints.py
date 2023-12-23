@@ -1,7 +1,6 @@
 import pytest
 
 from sqlmodel import Session, SQLModel, create_engine
-from sqlmodel.pool import StaticPool
 
 from fastapi import status
 from fastapi.testclient import TestClient
@@ -13,9 +12,8 @@ from ..src.hex.infrastructure.repository.sqlite3 import get_session
 @pytest.fixture(name="session")
 def session_fixture():
     engine = create_engine(
-        "sqlite://",
+        "sqlite:///testing.db",
         connect_args={"check_same_thread": False},
-        poolclass=StaticPool,
     )
     SQLModel.metadata.create_all(engine)
     with Session(engine) as session:
@@ -89,6 +87,12 @@ def client_fixture(session: Session):
             "user_07",
             "password123",
             status.HTTP_422_UNPROCESSABLE_ENTITY,
+            False,
+        ),
+        (
+            "user_00@server-00.com",
+            "password123",
+            status.HTTP_400_BAD_REQUEST,
             False,
         ),
     ],
