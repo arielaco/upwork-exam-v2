@@ -22,3 +22,12 @@ def get_user_by_username(session: Session, username: str):
     if not user:
         return False
     return user
+
+
+def delete_user_by_username(session: Session, username: str):
+    statement = select(UserInDB).where(UserInDB.username == username)
+    results = session.exec(statement)
+    user = results.first()
+    session.delete(user)
+    session.commit()
+    return results

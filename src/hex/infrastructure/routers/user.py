@@ -7,11 +7,7 @@ from fastapi import APIRouter, status, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
 from ...infrastructure.repository.tables import UserInDB
-from ...application.exceptions import (
-    INCORRECT_USERNAME_OR_PASSWORD_EXCEPTION,
-)
-from ...domain.models import UserBase
-from ...application.use_cases.user import create_user
+from ...application.use_cases.user import create_user, delete_user
 from ...application.use_cases.auth import (
     authenticate_user,
     get_current_user,
@@ -54,11 +50,14 @@ async def login_for_access_token(
     return response
 
 
-# @router.post(
-#     "/delete/",
-#     status_code=status.HTTP_204_NO_CONTENT,
-# )
-# async def read_users_me(
-#     current_user: Annotated[UserInDB, Depends(get_current_user)]
-# ):
-#     return current_user
+@router.post(
+    "/delete/",
+    status_code=status.HTTP_200_OK,
+)
+async def delete_user_endpoint(
+    *,
+    session: Session = Depends(get_session),
+    current_user: Annotated[UserInDB, Depends(get_current_user)],
+):
+    response = delete_user(session, current_user)
+    return response
