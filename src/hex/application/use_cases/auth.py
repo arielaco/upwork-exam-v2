@@ -1,3 +1,4 @@
+import json
 from datetime import datetime, timedelta
 from typing import Annotated
 
@@ -7,7 +8,10 @@ from sqlmodel import Session
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 
-from ...application.exceptions import CREDENTIALS_EXCEPTION
+from ...application.exceptions import (
+    CREDENTIALS_EXCEPTION,
+    INCORRECT_USERNAME_OR_PASSWORD_EXCEPTION,
+)
 from ...infrastructure.schemas.user import TokenData
 from ...infrastructure.repository.db import get_user_by_username
 from ...infrastructure.security import verify_password
@@ -27,23 +31,31 @@ def authenticate_user(
     username: str = "",
     password: str = "",
 ):
+    if not username:
+        raise CREDENTIALS_EXCEPTION
+    if not password:
+        raise CREDENTIALS_EXCEPTION
     user = get_user_by_username(session, username)
     if not user:
-        return False
+        raise INCORRECT_USERNAME_OR_PASSWORD_EXCEPTION
     if not verify_password(password, user.hashed_password):
-        return False
-    return user
+        raise INCORRECT_USERNAME_OR_PASSWORD_EXCEPTION
+    access_token = create_access_token(
+        data={
+            "username": user.username,
+        }
+    )
+    return access_token
 
 
-def create_access_token(data: dict, expires_delta: timedelta | None = None):
+def create_access_token(data: dict):
     to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.utcnow() + expires_delta
-    else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
-    to_encode.update({"exp": expire})
+    expires_delta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.utcnow() + expires_delta
+    expire = json.dumps(expire, default=str)
+    to_encode.update({"expire": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
+    return {"access_token": encoded_jwt, "token_type": "bearer"}
 
 
 async def get_current_user(
@@ -53,7 +65,7 @@ async def get_current_user(
 ):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username = payload.get("sub")
+        username = payload.get("username")
         if not username:
             raise CREDENTIALS_EXCEPTION
         token_data = TokenData(username=username)
