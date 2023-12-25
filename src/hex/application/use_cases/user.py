@@ -1,22 +1,13 @@
 from sqlmodel import Session
-from fastapi import HTTPException
 
 from ...infrastructure.schemas.user import UserIn
-from ...infrastructure.repository.db import user_save, login_user
+from ...infrastructure.repository.db import create_user_in_db
+from ...infrastructure.security import get_password_hash
+from ...infrastructure.repository.validations import check_email_in_use
 
 
 def create_user(session: Session, user_in: UserIn):
-    user_save(session, user_in)
+    check_email_in_use(session, user_in.username)
+    hashed_password = get_password_hash(user_in.password)
+    create_user_in_db(session, user_in, hashed_password)
     return {"response": "User created"}
-
-
-def login(user_in: UserIn):
-    token_jwt = login_user(user_in)
-    data = {
-        "username": "user_00@server_00.com",
-        "password": "password123",
-    }
-    if user_in.model_dump() == data:
-        return {"token": token_jwt}
-    else:
-        return HTTPException(status_code=404, detail="User not found")

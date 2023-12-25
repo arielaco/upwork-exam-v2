@@ -1,5 +1,5 @@
 from pydantic import EmailStr
-from sqlmodel import Field
+from sqlmodel import SQLModel, Field
 
 from ...domain.models import UserBase
 
@@ -11,3 +11,12 @@ class UserIn(UserBase):
 
 class UserOut(UserBase):
     pass
+
+
+class Token(SQLModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(SQLModel):
+    username: str
