@@ -23,7 +23,7 @@ from ...infrastructure.repository.sqlite3 import get_session
 from ..schemas.user import UserIn, Token
 
 
-router = APIRouter()
+router = APIRouter(prefix="/users")
 
 
 @router.post(

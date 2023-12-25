@@ -19,7 +19,7 @@ SECRET_KEY = "67b3d7fcecc21582d31ac273de5407552fda4b58133e9490a4f81906cb34f6a5"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/login/")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/users/login/")
 
 
 def authenticate_user(

@@ -114,7 +114,7 @@ def test_create_user(
     happy_path,
 ):
     response = client.post(
-        "api/v1/sign-up/",
+        "api/v1/users/sign-up/",
         json={
             "username": username,
             "password": password,
@@ -197,7 +197,7 @@ def test_login(
     happy_path,
 ):
     response = client.post(
-        "api/v1/login/",
+        "api/v1/users/login/",
         data={
             "username": username,
             "password": password,
