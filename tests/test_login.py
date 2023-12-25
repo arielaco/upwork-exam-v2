@@ -8,6 +8,7 @@ from fastapi.testclient import TestClient
 from ..src.hex.application.use_cases.auth import ALGORITHM
 
 
+# @pytest.mark.skip
 @pytest.mark.order(2)
 @pytest.mark.parametrize(
     ", ".join(
@@ -69,7 +70,6 @@ from ..src.hex.application.use_cases.auth import ALGORITHM
         ),
     ],
 )
-# @pytest.mark.skip
 def test_login(
     client: TestClient,
     username,

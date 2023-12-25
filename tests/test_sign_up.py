@@ -4,6 +4,7 @@ from fastapi import status
 from fastapi.testclient import TestClient
 
 
+# @pytest.mark.skip
 @pytest.mark.order(1)
 @pytest.mark.parametrize(
     ", ".join(
@@ -77,7 +78,6 @@ from fastapi.testclient import TestClient
         ),
     ],
 )
-# @pytest.mark.skip
 def test_create_user(
     client: TestClient,
     username,

@@ -8,6 +8,7 @@ from fastapi.testclient import TestClient
 from ..src.hex.application.use_cases.auth import ALGORITHM
 
 
+# @pytest.mark.skip
 @pytest.mark.order(3)
 @pytest.mark.parametrize(
     ", ".join(
@@ -24,7 +25,7 @@ from ..src.hex.application.use_cases.auth import ALGORITHM
             "user_00@server-00.com",
             "password123",
             True,
-            status.HTTP_204_NO_CONTENT,
+            status.HTTP_200_OK,
             True,
         ),
         (
@@ -34,51 +35,29 @@ from ..src.hex.application.use_cases.auth import ALGORITHM
             status.HTTP_401_UNAUTHORIZED,
             False,
         ),
-        # (
-        #     "user_00@server-00.com",
-        #     "123password",
-        #     status.HTTP_401_UNAUTHORIZED,
-        #     False,
-        # ),
-        # (
-        #     "user_00@server-00.com",
-        #     "",
-        #     status.HTTP_422_UNPROCESSABLE_ENTITY,
-        #     False,
-        # ),
-        # (
-        #     "user_00@server-00.com",
-        #     "123password",
-        #     status.HTTP_401_UNAUTHORIZED,
-        #     False,
-        # ),
-        # (
-        #     "user_03@server-01.xyz",
-        #     "Pa$$w0rd123xyz",
-        #     status.HTTP_200_OK,
-        #     True,
-        # ),
-        # (
-        #     "user_04@server-02.com",
-        #     "",
-        #     status.HTTP_422_UNPROCESSABLE_ENTITY,
-        #     False,
-        # ),
-        # (
-        #     "",
-        #     "password123",
-        #     status.HTTP_422_UNPROCESSABLE_ENTITY,
-        #     False,
-        # ),
-        # (
-        #     "",
-        #     "",
-        #     status.HTTP_422_UNPROCESSABLE_ENTITY,
-        #     False,
-        # ),
+        (
+            "user_01@server-00.com",
+            "password123",
+            True,
+            status.HTTP_200_OK,
+            True,
+        ),
+        (
+            "user_02@server-00.com",
+            "123password",
+            True,
+            status.HTTP_200_OK,
+            True,
+        ),
+        (
+            "user_03@server-01.xyz",
+            "Pa$$w0rd123xyz",
+            True,
+            status.HTTP_200_OK,
+            True,
+        ),
     ],
 )
-# @pytest.mark.skip
 def test_delete_user(
     client: TestClient,
     username,
@@ -113,17 +92,8 @@ def test_delete_user(
         },
         headers=headers,
     )
-
-    # print(response.json())
-
     assert response.status_code == status_code
     if happy_path:
-        assert "access_token" in response.json()
-        assert jwt.get_unverified_header(
-            response.json()["access_token"],
-        ) == {
-            "alg": ALGORITHM,
-            "typ": "JWT",
-        }
+        assert "response" in response.json()
     else:
         assert "detail" in response.json()
