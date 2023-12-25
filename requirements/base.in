@@ -2,3 +2,7 @@ fastapi
 uvicorn[standard]
 sqlmodel
 email-validator
+python-jose[cryptography]
+passlib
+passlib[bcrypt]
+python-multipart
