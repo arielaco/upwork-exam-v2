@@ -121,6 +121,10 @@ pygments==2.17.2
 pyproject-hooks==1.0.0
     # via build
 pytest==7.4.3
+    # via
+    #   -r requirements/develop.in
+    #   pytest-order
+pytest-order==1.2.0
     # via -r requirements/develop.in
 python-dotenv==1.0.0
     # via uvicorn
