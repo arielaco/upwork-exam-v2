@@ -93,3 +93,10 @@ def delete_profile_by_id(session: Session, profile_id: int):
     session.commit()
     session.close()
     return results
+
+
+def get_other_profiles_by_user_id(session: Session, user_id: int):
+    statement = select(Profile).where(Profile.user_id != user_id)
+    results = session.exec(statement)
+    profile = results.all()
+    return profile

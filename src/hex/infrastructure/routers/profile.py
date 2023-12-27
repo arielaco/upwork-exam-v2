@@ -8,6 +8,7 @@ from ...infrastructure.schemas.profile import (
     ProfileIn,
     ProfileOut,
     UserProfilesOut,
+    OtherProfilesOut,
 )
 from ...application.use_cases.auth import get_current_user
 from ...application.use_cases.profile import (
@@ -15,6 +16,7 @@ from ...application.use_cases.profile import (
     get_profiles,
     update_profile,
     delete_profile,
+    get_other_profiles,
 )
 from ...infrastructure.repository.tables import User
 from ...infrastructure.repository.sqlite3 import get_session
@@ -84,4 +86,19 @@ async def delete_profile_endpoint(
     profile_id: int,
 ):
     response = delete_profile(session, profile_id)
+    return response
+
+
+@router.get(
+    "/others/",
+    status_code=status.HTTP_200_OK,
+    response_model=OtherProfilesOut,
+)
+async def get_profile_endpoint(
+    *,
+    session: Session = Depends(get_session),
+    current_user: Annotated[User, Depends(get_current_user)],
+):
+    profiles = get_other_profiles(session, current_user.id)
+    response = OtherProfilesOut(profiles=profiles)
     return response

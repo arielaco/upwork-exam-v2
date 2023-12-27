@@ -8,6 +8,7 @@ from ...infrastructure.repository.db import (
     get_profiles_by_user_id,
     get_profile_by_id,
     delete_profile_by_id,
+    get_other_profiles_by_user_id,
 )
 
 
@@ -55,3 +56,8 @@ def delete_profile(
 ):
     delete_profile_by_id(session, profile_id)
     return {"response": "Profile deleted"}
+
+
+def get_other_profiles(session: Session, user_id: int) -> list[Profile]:
+    profiles = get_other_profiles_by_user_id(session, user_id)
+    return [profile for profile in profiles]

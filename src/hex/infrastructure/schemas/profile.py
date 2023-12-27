@@ -16,3 +16,7 @@ class ProfileOut(ProfileBase):
 class UserProfilesOut(SQLModel):
     user: UserOut
     profiles: list[Profile]
+
+
+class OtherProfilesOut(SQLModel):
+    profiles: list[Profile]
