@@ -76,3 +76,10 @@ def get_profiles_by_user_id(session: Session, user_id: int):
     results = session.exec(statement)
     profile = results.all()
     return profile
+
+
+def get_profile_by_id(session: Session, profile_id: int) -> Profile:
+    statement = select(Profile).where(Profile.id == profile_id)
+    results = session.exec(statement)
+    profile = results.first()
+    return profile

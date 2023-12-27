@@ -1,15 +1,12 @@
 from sqlmodel import Session
 
 from ...infrastructure.repository.tables import Profile, User
-from ...infrastructure.schemas.profile import (
-    ProfileIn,
-    ProfileOut,
-    UserProfilesOut,
-)
+from ...infrastructure.schemas.profile import ProfileIn, ProfileOut
 from ...infrastructure.repository.db import (
     create_profile_in_db,
     get_user_by_id,
     get_profiles_by_user_id,
+    get_profile_by_id,
 )
 
 
@@ -31,3 +28,21 @@ def create_profile(
 def get_profiles(session: Session, user: User) -> list[Profile]:
     profiles = get_profiles_by_user_id(session, user.id)
     return [profile for profile in profiles]
+
+
+def update_profile(
+    session: Session,
+    profile_id: int,
+    profile_in: ProfileIn,
+) -> ProfileOut:
+    profile = get_profile_by_id(session, profile_id)
+    profile.name = profile_in.name
+    profile.description = profile_in.description
+    session.add(profile)
+    session.commit()
+    session.refresh(profile)
+    return ProfileOut(
+        name=profile.name,
+        description=profile.description,
+        user=profile.user,
+    )
