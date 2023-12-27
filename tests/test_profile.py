@@ -116,8 +116,6 @@ def test_get_profile(
         "api/v1/users/profile/",
         headers={"Authorization": f"Bearer {access_token}"},
     )
-    print(get_profile_response.json())
-    # print(get_profile_response.json())
     assert get_profile_response.status_code == status_code
     if happy_path:
         assert "user" in get_profile_response.json()
@@ -128,3 +126,68 @@ def test_get_profile(
         assert "description" in get_profile_response.json()["profiles"][0]
     else:
         assert "detail" in get_profile_response.json()
+
+
+# @pytest.mark.skip
+@pytest.mark.order(6)
+@pytest.mark.parametrize(
+    ", ".join(
+        [
+            "username",
+            "password",
+            "name",
+            "description",
+            "status_code",
+            "happy_path",
+        ]
+    ),
+    [
+        (
+            f"user_{random_number}@server-00.com",
+            "password123",
+            "new name",
+            "new description",
+            status.HTTP_202_ACCEPTED,
+            True,
+        ),
+    ],
+)
+def test_update_profile(
+    client: TestClient,
+    username,
+    password,
+    name,
+    description,
+    status_code,
+    happy_path,
+):
+    access_data = {"username": username, "password": password}
+    login_response = client.post("api/v1/users/login/", data=access_data)
+    access_token = login_response.json()["access_token"]
+    get_profile_response = client.get(
+        "api/v1/users/profile/",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    random_profile = random.choice(get_profile_response.json()["profiles"])
+    profile_id = random_profile["id"]
+    update_profile_url = f"api/v1/users/profile/{profile_id}/"
+    update_profile_data = {}
+    if name:
+        update_profile_data["name"] = name
+    if description:
+        update_profile_data["description"] = description
+    update_profile_response = client.patch(
+        update_profile_url,
+        json=update_profile_data,
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    assert update_profile_response.status_code == status_code
+    if happy_path:
+        assert "name" in update_profile_response.json()
+        assert update_profile_response.json()["name"] == name
+        assert "description" in update_profile_response.json()
+        assert update_profile_response.json()["description"] == description
+        assert "user" in update_profile_response.json()
+        assert "username" in update_profile_response.json()["user"]
+    else:
+        assert "detail" in update_profile_response.json()
