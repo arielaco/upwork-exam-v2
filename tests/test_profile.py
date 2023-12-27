@@ -8,7 +8,7 @@ from fastapi.testclient import TestClient
 random_number = random.randrange(0, 99999, 1)
 
 
-@pytest.mark.skip
+# @pytest.mark.skip
 @pytest.mark.order(4)
 @pytest.mark.parametrize(
     ", ".join(
@@ -57,30 +57,20 @@ def test_create_profile(
     status_code,
     happy_path,
 ):
-    client.post(
-        "api/v1/users/sign-up/",
-        json={
-            "username": username,
-            "password": password,
-        },
-    )
+    access_data = {"username": username, "password": password}
+    client.post("api/v1/users/sign-up/", json=access_data)
     login_response = client.post(
         "api/v1/users/login/",
-        data={
-            "username": username,
-            "password": password,
-        },
+        data=access_data,
     )
-    auth_token = login_response.json()["access_token"]
+    access_token = login_response.json()["access_token"]
     create_profile_response = client.post(
         "api/v1/users/profile/",
         json={
             "name": name,
             "description": description,
         },
-        headers={
-            "Authorization": f"Bearer {auth_token}",
-        },
+        headers={"Authorization": f"Bearer {access_token}"},
     )
     assert create_profile_response.status_code == status_code
     if happy_path:
@@ -92,7 +82,7 @@ def test_create_profile(
         assert "detail" in create_profile_response.json()
 
 
-@pytest.mark.skip
+# @pytest.mark.skip
 @pytest.mark.order(5)
 @pytest.mark.parametrize(
     ", ".join(
@@ -119,29 +109,21 @@ def test_get_profile(
     status_code,
     happy_path,
 ):
-    login_response = client.post(
-        "api/v1/users/login/",
-        data={
-            "username": username,
-            "password": password,
-        },
-    )
+    access_data = {"username": username, "password": password}
+    login_response = client.post("api/v1/users/login/", data=access_data)
     access_token = login_response.json()["access_token"]
-    print("+++++++++++++++++++++++++++++++++++++++++ auth_token")
-    print(access_token)
     get_profile_response = client.get(
         "api/v1/users/profile/",
-        headers={
-            "Authorization": f"Bearer {access_token}",
-        },
+        headers={"Authorization": f"Bearer {access_token}"},
     )
     print(get_profile_response.json())
+    # print(get_profile_response.json())
     assert get_profile_response.status_code == status_code
-    # if happy_path:
-    #     assert "description" in get_profile_response.json()
-    #     assert "name" in get_profile_response.json()
-    #     assert "user" in get_profile_response.json()
-    #     assert "username" in get_profile_response.json()["user"]
-    # else:
-    #     assert "detail" in get_profile_response.json()
-    # assert False
+    if happy_path:
+        assert "user" in get_profile_response.json()
+        assert "username" in get_profile_response.json()["user"]
+        assert "profiles" in get_profile_response.json()
+        assert "name" in get_profile_response.json()[0]
+        assert "description" in get_profile_response.json()[0]
+    else:
+        assert "detail" in get_profile_response.json()

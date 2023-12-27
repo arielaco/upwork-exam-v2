@@ -96,7 +96,6 @@ def test_create_user(
             "password": password,
         },
     )
-    print(response.json())
     assert response.status_code == status_code
     if happy_path:
         assert response.json() == {
@@ -182,7 +181,6 @@ def test_login(
             "password": password,
         },
     )
-    print(response.json())
     assert response.status_code == status_code
     if happy_path:
         assert "access_token" in response.json()
