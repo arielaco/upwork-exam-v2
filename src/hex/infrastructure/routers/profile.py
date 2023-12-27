@@ -14,6 +14,7 @@ from ...application.use_cases.profile import (
     create_profile,
     get_profiles,
     update_profile,
+    delete_profile,
 )
 from ...infrastructure.repository.tables import User
 from ...infrastructure.repository.sqlite3 import get_session
@@ -70,3 +71,17 @@ async def update_profile_endpoint(
 ):
     updated_profile = update_profile(session, profile_id, profile_in)
     return updated_profile
+
+
+@router.delete(
+    "/{profile_id}/",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def delete_profile_endpoint(
+    *,
+    session: Session = Depends(get_session),
+    current_user: Annotated[User, Depends(get_current_user)],
+    profile_id: int,
+):
+    response = delete_profile(session, profile_id)
+    return response

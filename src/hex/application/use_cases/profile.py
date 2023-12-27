@@ -7,6 +7,7 @@ from ...infrastructure.repository.db import (
     get_user_by_id,
     get_profiles_by_user_id,
     get_profile_by_id,
+    delete_profile_by_id,
 )
 
 
@@ -46,3 +47,11 @@ def update_profile(
         description=profile.description,
         user=profile.user,
     )
+
+
+def delete_profile(
+    session: Session,
+    profile_id: int,
+):
+    delete_profile_by_id(session, profile_id)
+    return {"response": "Profile deleted"}

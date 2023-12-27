@@ -83,3 +83,13 @@ def get_profile_by_id(session: Session, profile_id: int) -> Profile:
     results = session.exec(statement)
     profile = results.first()
     return profile
+
+
+def delete_profile_by_id(session: Session, profile_id: int):
+    statement = select(Profile).where(Profile.id == profile_id)
+    results = session.exec(statement)
+    profile = results.first()
+    session.delete(profile)
+    session.commit()
+    session.close()
+    return results
