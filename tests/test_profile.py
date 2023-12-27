@@ -123,7 +123,8 @@ def test_get_profile(
         assert "user" in get_profile_response.json()
         assert "username" in get_profile_response.json()["user"]
         assert "profiles" in get_profile_response.json()
-        assert "name" in get_profile_response.json()[0]
-        assert "description" in get_profile_response.json()[0]
+        assert "id" in get_profile_response.json()["profiles"][0]
+        assert "name" in get_profile_response.json()["profiles"][0]
+        assert "description" in get_profile_response.json()["profiles"][0]
     else:
         assert "detail" in get_profile_response.json()
