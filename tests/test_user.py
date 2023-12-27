@@ -218,28 +218,28 @@ def test_login(
             "user_00@server-00.com",
             "password123",
             True,
-            status.HTTP_200_OK,
+            status.HTTP_204_NO_CONTENT,
             True,
         ),
         (
             "user_01@server-00.com",
             "password123",
             True,
-            status.HTTP_200_OK,
+            status.HTTP_204_NO_CONTENT,
             True,
         ),
         (
             "user_02@server-00.com",
             "123password",
             True,
-            status.HTTP_200_OK,
+            status.HTTP_204_NO_CONTENT,
             True,
         ),
         (
             "user_03@server-01.xyz",
             "Pa$$w0rd123xyz",
             True,
-            status.HTTP_200_OK,
+            status.HTTP_204_NO_CONTENT,
             True,
         ),
     ],
@@ -252,7 +252,7 @@ def test_delete_user(
     status_code,
     happy_path,
 ):
-    delete_user_url = "api/v1/users/delete/"
+    delete_user_url = "api/v1/users/"
     authentication_data = {
         "username": username,
         "password": password,
@@ -264,18 +264,12 @@ def test_delete_user(
     access_token = login_response.json()["access_token"]
     headers = {"Authorization": f"Bearer {access_token}"}
     if with_token:
-        response = client.post(
-            delete_user_url,
-            json=authentication_data,
-            headers=headers,
-        )
+        response = client.delete(delete_user_url, headers=headers)
     else:
-        response = client.post(
-            delete_user_url,
-            json=authentication_data,
-        )
+        response = client.delete(delete_user_url)
+
     assert response.status_code == status_code
     if happy_path:
-        assert "response" in response.json()
+        assert response.text == ""
     else:
         assert "detail" in response.json()

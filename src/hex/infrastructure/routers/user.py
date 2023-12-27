@@ -51,9 +51,9 @@ async def login_for_access_token(
     return response
 
 
-@router.post(
-    "/delete/",
-    status_code=status.HTTP_200_OK,
+@router.delete(
+    "/",
+    status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete_user_endpoint(
     *,
