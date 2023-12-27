@@ -1,7 +1,7 @@
-from pydantic import EmailStr
-from sqlmodel import SQLModel, Field
+from sqlmodel import SQLModel
 
 from ...domain.models import ProfileBase
+from ...infrastructure.repository.tables import Profile
 from .user import UserOut
 
 
@@ -11,3 +11,8 @@ class ProfileIn(ProfileBase):
 
 class ProfileOut(ProfileBase):
     user: UserOut
+
+
+class UserProfilesOut(SQLModel):
+    user: UserOut
+    profiles: list[Profile]

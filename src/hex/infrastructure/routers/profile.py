@@ -4,9 +4,13 @@ from sqlmodel import Session
 
 from fastapi import APIRouter, status, Depends
 
+from ...infrastructure.schemas.profile import (
+    ProfileIn,
+    ProfileOut,
+    UserProfilesOut,
+)
 from ...application.use_cases.auth import get_current_user
-from ...application.use_cases.profile import create_profile
-from ...infrastructure.schemas.profile import ProfileIn, ProfileOut
+from ...application.use_cases.profile import create_profile, get_profiles
 from ...infrastructure.repository.tables import User
 from ...infrastructure.repository.sqlite3 import get_session
 
@@ -25,23 +29,24 @@ async def create_profile_endpoint(
     current_user: Annotated[User, Depends(get_current_user)],
     profile_in: ProfileIn,
 ):
-    response = create_profile(session, current_user.id, profile_in)
+    response = create_profile(
+        session,
+        current_user.id,
+        profile_in,
+    )
     return response
 
 
 @router.get(
     "/",
     status_code=status.HTTP_200_OK,
-    # response_model=ProfileOut,
+    response_model=UserProfilesOut,
 )
 async def get_profile_endpoint(
     *,
     session: Session = Depends(get_session),
     current_user: Annotated[User, Depends(get_current_user)],
 ):
-    # response = authenticate_user(
-    #     session,
-    #     form_data.username,
-    #     form_data.password,
-    # )
-    return {}
+    profiles = get_profiles(session, current_user)
+    response = UserProfilesOut(user=current_user, profiles=profiles)
+    return response

@@ -5,7 +5,11 @@ from ..schemas.user import UserIn
 from .tables import User, Profile
 
 
-def create_user_in_db(session: Session, user_in: UserIn, hashed_password: str):
+def create_user_in_db(
+    session: Session,
+    user_in: UserIn,
+    hashed_password: str,
+) -> User:
     user = User(
         **user_in.model_dump(),
         hashed_password=hashed_password,
@@ -17,7 +21,10 @@ def create_user_in_db(session: Session, user_in: UserIn, hashed_password: str):
     return user
 
 
-def get_user_by_username(session: Session, username: str):
+def get_user_by_username(
+    session: Session,
+    username: str,
+) -> User:
     statement = select(User).where(User.username == username)
     results = session.exec(statement)
     user = results.first()
@@ -26,7 +33,10 @@ def get_user_by_username(session: Session, username: str):
     return user
 
 
-def get_user_by_id(session: Session, user_id: int):
+def get_user_by_id(
+    session: Session,
+    user_id: int,
+) -> User:
     statement = select(User).where(User.id == user_id)
     results = session.exec(statement)
     user = results.first()
@@ -45,7 +55,11 @@ def delete_user_by_username(session: Session, username: str):
     return results
 
 
-def create_profile_in_db(session: Session, user_id: int, profile_in: ProfileIn):
+def create_profile_in_db(
+    session: Session,
+    user_id: int,
+    profile_in: ProfileIn,
+) -> Profile:
     profile = Profile(
         **profile_in.model_dump(),
         user_id=user_id,
@@ -54,4 +68,11 @@ def create_profile_in_db(session: Session, user_id: int, profile_in: ProfileIn):
     session.commit()
     session.refresh(profile)
     session.close()
+    return profile
+
+
+def get_profiles_by_user_id(session: Session, user_id: int):
+    statement = select(Profile).where(Profile.user_id == user_id)
+    results = session.exec(statement)
+    profile = results.all()
     return profile
