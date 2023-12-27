@@ -82,7 +82,7 @@ def test_create_profile(
         assert "detail" in create_profile_response.json()
 
 
-@pytest.mark.skip
+# @pytest.mark.skip
 @pytest.mark.order(5)
 @pytest.mark.parametrize(
     ", ".join(
@@ -128,7 +128,7 @@ def test_get_profile(
         assert "detail" in get_profile_response.json()
 
 
-@pytest.mark.skip
+# @pytest.mark.skip
 @pytest.mark.order(6)
 @pytest.mark.parametrize(
     ", ".join(
@@ -234,3 +234,48 @@ def test_delete_profile(
         assert response.text == ""
     else:
         assert "detail" in response.json()
+
+
+# @pytest.mark.skip
+@pytest.mark.order(8)
+@pytest.mark.parametrize(
+    ", ".join(
+        [
+            "username",
+            "password",
+            "status_code",
+            "happy_path",
+        ]
+    ),
+    [
+        (
+            f"user_{random_number}@server-00.com",
+            "password123",
+            status.HTTP_200_OK,
+            True,
+        ),
+    ],
+)
+def test_get_other_profiles(
+    client: TestClient,
+    username,
+    password,
+    status_code,
+    happy_path,
+):
+    access_data = {"username": username, "password": password}
+    login_response = client.post("api/v1/users/login/", data=access_data)
+    access_token = login_response.json()["access_token"]
+    get_profile_response = client.get(
+        "api/v1/users/profile/others/",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    assert get_profile_response.status_code == status_code
+    if happy_path:
+        assert "profiles" in get_profile_response.json()
+        assert "id" in get_profile_response.json()["profiles"][0]
+        assert "user_id" in get_profile_response.json()["profiles"][0]
+        assert "name" in get_profile_response.json()["profiles"][0]
+        assert "description" in get_profile_response.json()["profiles"][0]
+    else:
+        assert "detail" in get_profile_response.json()
