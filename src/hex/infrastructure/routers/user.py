@@ -1,4 +1,3 @@
-from datetime import timedelta
 from typing import Annotated
 
 from sqlmodel import Session
@@ -6,7 +5,7 @@ from sqlmodel import Session
 from fastapi import APIRouter, status, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
-from ...infrastructure.repository.tables import UserInDB
+from ...infrastructure.repository.tables import User
 from ...application.use_cases.user import create_user, delete_user
 from ...application.use_cases.auth import (
     authenticate_user,
@@ -14,9 +13,11 @@ from ...application.use_cases.auth import (
 )
 from ...infrastructure.repository.sqlite3 import get_session
 from ..schemas.user import UserIn, Token
+from .profile import router as profile_router
 
 
 router = APIRouter(prefix="/users")
+router.include_router(profile_router)
 
 
 @router.post(
@@ -57,7 +58,7 @@ async def login_for_access_token(
 async def delete_user_endpoint(
     *,
     session: Session = Depends(get_session),
-    current_user: Annotated[UserInDB, Depends(get_current_user)],
+    current_user: Annotated[User, Depends(get_current_user)],
 ):
     response = delete_user(session, current_user)
     return response
