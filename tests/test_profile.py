@@ -370,3 +370,45 @@ def test_get_favorite_profiles(
         assert "description" in test_response.json()["profiles"][0]
     else:
         assert "detail" in test_response.json()
+
+
+# @pytest.mark.skip
+@pytest.mark.order(11)
+@pytest.mark.parametrize(
+    ", ".join(
+        [
+            "username",
+            "password",
+            "status_code",
+            "happy_path",
+        ]
+    ),
+    [
+        (
+            f"user_{random_number}@server-00.com",
+            "password123",
+            status.HTTP_204_NO_CONTENT,
+            True,
+        ),
+    ],
+)
+def test_delete_profile_from_favorites(
+    client: TestClient,
+    username,
+    password,
+    status_code,
+    happy_path,
+):
+    favorite_profiles_url = "api/v1/users/profile/favorites/"
+    access_token = get_access_token(client, username, password)
+    headers = {"Authorization": f"Bearer {access_token}"}
+    get_favorites_response = client.get(favorite_profiles_url, headers=headers)
+    random_profile = random.choice(get_favorites_response.json()["profiles"])
+    profile_id = random_profile["id"]
+    delete_profile_url = f"api/v1/users/profile/favorites/{profile_id}/"
+    response = client.delete(delete_profile_url, headers=headers)
+    assert response.status_code == status_code
+    if happy_path:
+        assert response.text == ""
+    else:
+        assert "detail" in response.json()
