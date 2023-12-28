@@ -73,7 +73,15 @@ def add_to_favorite_profiles(
     user: User,
     profiles: AddToFavoritesIn,
 ) -> dict:
-    user.profile_favorites = profiles.to_string()
+    if user.profile_favorites:
+        user.profile_favorites = ",".join(
+            [
+                user.profile_favorites,
+                profiles.to_string(),
+            ]
+        )
+    else:
+        user.profile_favorites = profiles.to_string()
     session.add(user)
     session.commit()
     session.refresh(user)
@@ -86,3 +94,17 @@ def get_favorite_profiles(session: Session, user: User) -> list[Profile]:
     profile_ids = user.favorites_list()
     profiles = get_profiles_by_id(session, profile_ids)
     return [profile for profile in profiles]
+
+
+def delete_favorite_profile(
+    session: Session,
+    user: User,
+    profile_id: int,
+):
+    profile_ids = user.favorites_list()
+    profile_ids.pop(profile_ids.index(str(profile_id)))
+    user.profile_favorites = ",".join(profile_ids)
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+    return {"response": "Profile deleted from favorites"}

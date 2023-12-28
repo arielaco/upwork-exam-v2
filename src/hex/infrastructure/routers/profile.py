@@ -20,6 +20,7 @@ from ...application.use_cases.profile import (
     get_other_profiles,
     add_to_favorite_profiles,
     get_favorite_profiles,
+    delete_favorite_profile,
 )
 from ...infrastructure.repository.tables import User
 from ...infrastructure.repository.sqlite3 import get_session
@@ -144,3 +145,22 @@ async def get_favorite_profiles_endpoint(
 ):
     profiles = get_favorite_profiles(session, current_user)
     return OtherProfilesOut(profiles=profiles)
+
+
+@router.delete(
+    "/favorites/{profile_id}/",
+    status_code=status.HTTP_204_NO_CONTENT,
+    tags=["favorites"],
+)
+async def get_favorite_profiles_endpoint(
+    *,
+    session: Session = Depends(get_session),
+    current_user: Annotated[User, Depends(get_current_user)],
+    profile_id: int,
+):
+    response = delete_favorite_profile(
+        session,
+        current_user,
+        profile_id,
+    )
+    return response
