@@ -19,6 +19,7 @@ from ...application.use_cases.profile import (
     delete_profile,
     get_other_profiles,
     add_to_favorite_profiles,
+    get_favorite_profiles,
 )
 from ...infrastructure.repository.tables import User
 from ...infrastructure.repository.sqlite3 import get_session
@@ -128,3 +129,18 @@ async def add_profiles_to_favorites_endpoint(
         profiles_to_add,
     )
     return response
+
+
+@router.get(
+    "/favorites/",
+    status_code=status.HTTP_200_OK,
+    response_model=OtherProfilesOut,
+    tags=["favorites"],
+)
+async def get_favorite_profiles_endpoint(
+    *,
+    session: Session = Depends(get_session),
+    current_user: Annotated[User, Depends(get_current_user)],
+):
+    profiles = get_favorite_profiles(session, current_user)
+    return OtherProfilesOut(profiles=profiles)

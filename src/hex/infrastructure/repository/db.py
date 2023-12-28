@@ -100,3 +100,10 @@ def get_other_profiles_by_user_id(session: Session, user_id: int):
     results = session.exec(statement)
     profile = results.all()
     return profile
+
+
+def get_profiles_by_id(session: Session, profile_ids: list[str]):
+    statement = select(Profile).filter(Profile.id.in_(profile_ids))
+    results = session.exec(statement)
+    profiles = results.all()
+    return profiles

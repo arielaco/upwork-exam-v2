@@ -13,6 +13,7 @@ from ...infrastructure.repository.db import (
     get_profile_by_id,
     delete_profile_by_id,
     get_other_profiles_by_user_id,
+    get_profiles_by_id,
 )
 
 
@@ -77,3 +78,11 @@ def add_to_favorite_profiles(
     session.commit()
     session.refresh(user)
     return {"response": "Profiles added to favorites"}
+
+
+def get_favorite_profiles(session: Session, user: User) -> list[Profile]:
+    if not user.profile_favorites:
+        return []
+    profile_ids = user.favorites_list()
+    profiles = get_profiles_by_id(session, profile_ids)
+    return [profile for profile in profiles]
