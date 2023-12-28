@@ -8,7 +8,7 @@ from .utils import get_access_token
 
 
 random_number = random.randrange(0, 99999, 1)
-random_small_number = random.randrange(0, 5, 1)
+random_small_number = random.randrange(1, 5, 1)
 
 
 # @pytest.mark.skip
@@ -325,5 +325,48 @@ def test_add_other_profiles_to_my_favorites(
     assert test_response.status_code == status_code
     if happy_path:
         assert "response" in test_response.json()
+    else:
+        assert "detail" in test_response.json()
+
+
+# @pytest.mark.skip
+@pytest.mark.order(10)
+@pytest.mark.parametrize(
+    ", ".join(
+        [
+            "username",
+            "password",
+            "status_code",
+            "happy_path",
+        ]
+    ),
+    [
+        (
+            f"user_{random_number}@server-00.com",
+            "password123",
+            status.HTTP_200_OK,
+            True,
+        ),
+    ],
+)
+def test_get_favorite_profiles(
+    client: TestClient,
+    username,
+    password,
+    status_code,
+    happy_path,
+):
+    test_endpoint = "api/v1/users/profile/favorites/"
+    access_token = get_access_token(client, username, password)
+    test_response = client.get(
+        test_endpoint,
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    assert test_response.status_code == status_code
+    if happy_path:
+        assert "profiles" in test_response.json()
+        assert "id" in test_response.json()["profiles"][0]
+        assert "name" in test_response.json()["profiles"][0]
+        assert "description" in test_response.json()["profiles"][0]
     else:
         assert "detail" in test_response.json()
