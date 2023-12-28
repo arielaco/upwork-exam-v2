@@ -9,6 +9,7 @@ from ...infrastructure.schemas.profile import (
     ProfileOut,
     UserProfilesOut,
     OtherProfilesOut,
+    AddToFavoritesIn,
 )
 from ...application.use_cases.auth import get_current_user
 from ...application.use_cases.profile import (
@@ -17,6 +18,7 @@ from ...application.use_cases.profile import (
     update_profile,
     delete_profile,
     get_other_profiles,
+    add_to_favorite_profiles,
 )
 from ...infrastructure.repository.tables import User
 from ...infrastructure.repository.sqlite3 import get_session
@@ -29,6 +31,7 @@ router = APIRouter(prefix="/profile")
     "/",
     status_code=status.HTTP_201_CREATED,
     response_model=ProfileOut,
+    tags=["profile"],
 )
 async def create_profile_endpoint(
     *,
@@ -48,6 +51,7 @@ async def create_profile_endpoint(
     "/",
     status_code=status.HTTP_200_OK,
     response_model=UserProfilesOut,
+    tags=["profile"],
 )
 async def get_profile_endpoint(
     *,
@@ -63,6 +67,7 @@ async def get_profile_endpoint(
     "/{profile_id}/",
     status_code=status.HTTP_202_ACCEPTED,
     response_model=ProfileOut,
+    tags=["profile"],
 )
 async def update_profile_endpoint(
     *,
@@ -78,6 +83,7 @@ async def update_profile_endpoint(
 @router.delete(
     "/{profile_id}/",
     status_code=status.HTTP_204_NO_CONTENT,
+    tags=["profile"],
 )
 async def delete_profile_endpoint(
     *,
@@ -93,12 +99,32 @@ async def delete_profile_endpoint(
     "/others/",
     status_code=status.HTTP_200_OK,
     response_model=OtherProfilesOut,
+    tags=["profile"],
 )
-async def get_profile_endpoint(
+async def others_profiles_endpoint(
     *,
     session: Session = Depends(get_session),
     current_user: Annotated[User, Depends(get_current_user)],
 ):
     profiles = get_other_profiles(session, current_user.id)
     response = OtherProfilesOut(profiles=profiles)
+    return response
+
+
+@router.post(
+    "/favorites/",
+    status_code=status.HTTP_201_CREATED,
+    tags=["favorites"],
+)
+async def add_profiles_to_favorites_endpoint(
+    *,
+    session: Session = Depends(get_session),
+    current_user: Annotated[User, Depends(get_current_user)],
+    profiles_to_add: AddToFavoritesIn,
+):
+    response = add_to_favorite_profiles(
+        session,
+        current_user,
+        profiles_to_add,
+    )
     return response

@@ -8,6 +8,7 @@ class User(UserBase, table=True):
     hashed_password: str
 
     profiles: list["Profile"] = Relationship(back_populates="user")
+    profile_favorites: str | None
 
 
 class Profile(ProfileBase, table=True):

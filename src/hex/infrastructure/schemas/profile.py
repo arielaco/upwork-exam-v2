@@ -20,3 +20,10 @@ class UserProfilesOut(SQLModel):
 
 class OtherProfilesOut(SQLModel):
     profiles: list[Profile]
+
+
+class AddToFavoritesIn(SQLModel):
+    profile_ids: list[int]
+
+    def to_string(self):
+        return ",".join([str(id) for id in self.profile_ids])

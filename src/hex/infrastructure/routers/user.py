@@ -23,6 +23,7 @@ router.include_router(profile_router)
 @router.post(
     "/sign-up/",
     status_code=status.HTTP_201_CREATED,
+    tags=["auth"],
 )
 async def create_user_endpoint(
     *,
@@ -37,8 +38,9 @@ async def create_user_endpoint(
     "/login/",
     status_code=status.HTTP_200_OK,
     response_model=Token,
+    tags=["auth"],
 )
-async def login_for_access_token(
+async def login_for_access_token_endpoint(
     *,
     session: Session = Depends(get_session),
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
@@ -54,6 +56,7 @@ async def login_for_access_token(
 @router.delete(
     "/",
     status_code=status.HTTP_204_NO_CONTENT,
+    tags=["user"],
 )
 async def delete_user_endpoint(
     *,

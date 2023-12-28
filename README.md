@@ -10,7 +10,7 @@ Working FastAPI API with a User and Profile models and schemas.
 4. Deliver a GitHub repository with your solution (it can be private, just give access to @arielaco)
 
 ## Tasks
-- [ ] Create a [User](###User) and [Profile](###Profile) models and schemas 
+- [x] Create a [User](###User) and [Profile](###Profile) models and schemas 
 - [ ] Develop a REST API exposing CRUD endpoints for both models
 - [x] Test at least 2 endpoints using pytest (with fixtures)
 - [x] Point docs to root path

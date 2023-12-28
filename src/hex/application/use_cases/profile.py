@@ -1,7 +1,11 @@
 from sqlmodel import Session
 
 from ...infrastructure.repository.tables import Profile, User
-from ...infrastructure.schemas.profile import ProfileIn, ProfileOut
+from ...infrastructure.schemas.profile import (
+    AddToFavoritesIn,
+    ProfileIn,
+    ProfileOut,
+)
 from ...infrastructure.repository.db import (
     create_profile_in_db,
     get_user_by_id,
@@ -61,3 +65,15 @@ def delete_profile(
 def get_other_profiles(session: Session, user_id: int) -> list[Profile]:
     profiles = get_other_profiles_by_user_id(session, user_id)
     return [profile for profile in profiles]
+
+
+def add_to_favorite_profiles(
+    session: Session,
+    user: User,
+    profiles: AddToFavoritesIn,
+) -> dict:
+    user.profile_favorites = profiles.to_string()
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+    return {"response": "Profiles added to favorites"}

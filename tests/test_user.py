@@ -7,6 +7,8 @@ from fastapi.testclient import TestClient
 
 from ..src.hex.application.use_cases.auth import ALGORITHM
 
+from .utils import get_access_token
+
 
 # @pytest.mark.skip
 @pytest.mark.order(1)
@@ -253,15 +255,7 @@ def test_delete_user(
     happy_path,
 ):
     delete_user_url = "api/v1/users/"
-    authentication_data = {
-        "username": username,
-        "password": password,
-    }
-    login_response = client.post(
-        "api/v1/users/login/",
-        data=authentication_data,
-    )
-    access_token = login_response.json()["access_token"]
+    access_token = get_access_token(client, username, password)
     headers = {"Authorization": f"Bearer {access_token}"}
     if with_token:
         response = client.delete(delete_user_url, headers=headers)
